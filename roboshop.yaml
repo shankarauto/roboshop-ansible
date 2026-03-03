@@ -4,6 +4,7 @@
   vars:
     sg_id: "sg-048193ac291fc884d"
     amid_id: "ami-0220d79f3f480ecf5"
+    domain_id: "vtk88s.online"
     env: dev
     instances:
     - mongodb
@@ -22,6 +23,18 @@
         Name: "{{ item }}-{{ env}}"
     loop: "{{ instances }}"  
     register: ec2_output
-  - name: print the ec2_output
+
+  - name: print the output
     ansible.builtin.debug:
       msg: "{{ ec2_output }}"
+
+  - name: create r53 records
+    amazon.aws.route53:
+      state: present
+      zone: " {{ domain_id }}"
+      record: "{{ item.item }}-{{ env }}.{{ domain_id }}" #mongodb-dev.vtk88s.online
+      type: A 
+      ttl: 1 
+      value: "{{ item.instances[0].private_ip_address }}"
+      wait: true
+    loop: " {{ ec2_output.results }}"
