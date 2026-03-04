@@ -4,7 +4,7 @@
   connection: local
   vars:
     sg_id: sg-048193ac291fc884d
-    amid_id: ami-0220d79f3f480ecf5
+    ami_id: ami-0220d79f3f480ecf5
     domain_name: vtk88s.online
     env: dev
     action: create
